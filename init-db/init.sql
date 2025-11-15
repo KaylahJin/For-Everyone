@@ -21,9 +21,11 @@ BEGIN
         title NVARCHAR(255),
         author NVARCHAR(255),
         category NVARCHAR(100),
-        price FLOAT,
+        price DECIMAL(10, 2),
         isbn NVARCHAR(100),
-        coverUrl NVARCHAR(255)
+        description NVARCHAR(MAX),
+        coverUrl NVARCHAR(255),
+        stock INT NOT NULL DEFAULT 0
     );
     PRINT '✅ Table [books] created.';
 END
