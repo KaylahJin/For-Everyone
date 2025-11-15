@@ -79,6 +79,13 @@ public class BookController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
+        return bookRepository.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+}
+
     // update stock (used by +/- buttons)
     @PutMapping("/{id}/stock")
     public ResponseEntity<?> updateStock(@PathVariable Long id, @RequestParam int stock) {
