@@ -1,0 +1,335 @@
+/* index.css */
+.sr-only {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ============ variables ============ */
+:root {
+    --banner-h: 486px;
+    --rail-w: 84px;
+    --rail-bg: rgb(255, 247, 235);
+    --arrow-box: 84px;
+    --arrow-w: 39px;
+    --arrow-h: 49px;
+    --arrow-fill: #6D6553;
+    --arrow-bg: #E2DCD0;
+
+    --card-bg: #E2DCD0;
+    --text-dk: #6D6553;
+    --text-md: #7d715d;
+    --btn-bg: #B6A88A;
+}
+
+/* กันสกรอลล์แนวนอน */
+html,
+body {
+    overflow-x: hidden;
+}
+
+
+.books-section {
+    max-width: 1200px;
+    margin: 55px auto 60px;
+    padding: 0 12px;
+}
+
+.books-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.books-header h2 {
+    font-size: 36px;
+    font-family: "Libre Baskerville", serif;
+    color: #92866E;
+
+}
+
+/* กริดการ์ด */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px 40px;
+    /* row-gap / column-gap */
+}
+
+/* การ์ดเล่มหนังสือ */
+.book-wrap {
+    width: 201px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+.book-card {
+    width: 201px;
+    height: 310px;
+    padding: 16px 0 10px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    border: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    text-align: center;
+}
+
+/* ขนาดรูป */
+.book-cover,
+.book-s-pic {
+    width: 150px;
+    height: 181px;
+    aspect-ratio: 150/181;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 12px;
+    margin-bottom: 16px;
+    background: #eee;
+}
+
+.book-title {
+    font-size: 20px;
+    font-family: "Libre Baskerville", serif;
+    margin-top: 0;
+}
+
+.book-author {
+    font-size: 18px;
+    font-family: "Libre Baskerville", serif;
+}
+
+.price-tag {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    font-family: "Libre Baskerville", serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #6D6553;
+    background: transparent;
+    padding: 0;
+    border: 0;
+}
+
+/* ปุ่ม */
+.btn-add {
+    align-self: center;
+    background: var(--btn-bg);
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    padding: 8px 14px;
+    width: 173px;
+    height: 47px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: filter .15s ease, transform .05s ease;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, .08);
+}
+
+.btn-add:hover {
+    filter: brightness(.95);
+}
+
+.btn-add:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .08);
+}
+
+/* state */
+.books-grid .empty {
+    flex: 1 1 100%;
+    text-align: center;
+    color: #9c927c;
+    padding: 24px 0;
+}
+
+/* === Cart badge === */
+.header-icons .cart {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    border-radius: 50%;
+    background: #ff3b00;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 0 0 2px #E2DCD0;
+}
+
+.cart-badge.is-zero {
+    display: none;
+}
+
+.books-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 40px;
+}
+
+.filter-sidebar {
+    background: transparent;
+    font-family: "Libre Baskerville", serif;
+}
+
+.filter-sidebar h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #6D6553;
+}
+
+.filter-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.filter-sidebar li {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #6D6553;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.book-detail {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 20px;
+    color: #6D6553;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    text-decoration: underline;
+    color: #6D6553;
+}
+
+.detail-wrapper {
+    display: flex;
+    gap: 40px;
+}
+
+.left {
+    width: 280px;
+}
+
+.book-cover {
+    width: 250px;
+    height: 330px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #eee;
+}
+
+.book-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 15px;
+}
+
+.book-author {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.btn-add-lg {
+    background: #B6A88A;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.right {
+    flex: 1;
+}
+
+.desc-title {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.desc-text {
+    font-size: 18px;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+.tag-line,
+.price-line {
+    font-size: 18px;
+    margin-top: 15px;
+}
+
+.book-left {
+    width: 280px;
+    text-align: center;
+    /* จัดกลางทุกอย่าง */
+    display: flex;
+    flex-direction: column;
+    /* เรียงบนลงล่าง */
+    align-items: center;
+    /* จัดให้กึ่งกลางแนวนอน */
+    gap: 12px;
+    /* ระยะห่างระหว่างแต่ละชิ้น */
+}
+
+.book-cover-lg {
+    width: 85%;
+    max-width: 260px;
+    border-radius: 8px;
+}
+
+.book-title {
+    font-family: "Libre Baskerville", serif;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    color: #6d6553;
+    line-height: 28px;
+    margin-top: 12px;
+}
+
+.book-author {
+    font-size: 18px;
+    color: #6d6553;
+}
+
+.btn-add-lg {
+    margin-top: 4px;
+    width: 180px;
+    padding: 10px;
+    background: #b6a88a;
+    color: white;
+    font-size: 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+

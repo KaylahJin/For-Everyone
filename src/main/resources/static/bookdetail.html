@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookstore</title>
+    <link rel="stylesheet" href="stylesheet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="bookdetail.css" />
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="img/logo.png" alt="Bookstore Logo">
+            </div>
+
+            <form id="searchForm" class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search" aria-label="Search books">
+                <button type="submit" class="search-image-btn" aria-label="Search">
+                    <img src="img/search.svg" alt="Search">
+                </button>
+            </form>
+
+            <div class="header-icons">
+                <a href="cart.html" class="cart" aria-label="Open cart">
+                    <img src="img/cart-icon.svg" alt="">
+                    <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
+                </a>
+                <a href="login.html" class="icon" aria-label="Login">
+                    <img src="img/BlankPF.png" alt="">
+                </a>
+            </div>
+        </div>
+    </header>
+
+<section class="book-detail">
+
+    <a href="allbooks.html" class="back-btn">&lt; Back</a>
+
+    <div class="detail-wrapper">
+        <div class="book-left">
+            <img id="bookCover" class="book-cover-lg" src="">
+            <h2 id="bookTitle" class="book-title">Book’s name</h2>
+            <p id="bookAuthor" class="book-author">Author’s name</p>
+            <button id="addBtn" class="btn-add-lg">+ Add to cart</button>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right">
+            <h3 class="desc-title">Description:</h3>
+            <p id="bookDescription" class="desc-text">Loading…</p>
+
+            <p class="tag-line">
+                <b>Tag:</b> <span id="bookTags">-</span>
+            </p>
+
+            <p class="price-line">
+                <b>Price:</b> ฿<span id="bookPrice">0</span>
+            </p>
+        </div>
+    </div>
+
+</section>
+
+
+
+    <!--  Script zone -->
+    <script>
+        const apiBase = "http://localhost:8080/api/books";
+        const cartApi = "http://localhost:8080/api/cart";
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get("id");
+
+        // โหลดข้อมูลหนังสือ
+        async function loadBookDetail() {
+            if (!bookId) return;
+
+            const res = await fetch(`${apiBase}/${bookId}`);
+            const book = await res.json();
+
+            document.getElementById("bookTitle").textContent = book.title;
+            document.getElementById("bookAuthor").textContent = book.author;
+            document.getElementById("bookPrice").textContent = book.price;
+            document.getElementById("bookDescription").textContent = book.description || "No description.";
+            document.getElementById("bookTags").textContent = book.category || "-";
+
+            document.getElementById("bookCover").src = book.coverUrl || "https://picsum.photos/400/500";
+
+            document.getElementById("addBtn").onclick = () => addToCart(book.id);
+
+        }
+
+        // Add to cart
+        async function addToCart(bookId) {
+            let userId = localStorage.getItem("userId");
+            if (!userId) {
+                alert("Please log in first");
+                return;
+            }
+            const cartItem = { userId: Number(userId), book: { id: bookId }, quantity: 1 };
+
+            const res = await fetch(`${cartApi}/add`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(cartItem)
+            });
+
+            res.ok ? alert("Added to cart!") : alert("Failed to add");
+        }
+
+        loadBookDetail();
+    </script>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="ft-ref">
+                <h3 class="ft-title">Reference</h3>
+            </div>
+
+            <div class="ft-genre">
+                <div class="ft-sub">Genre:</div>
+                <ul class="ft-list">
+                    <li>- Romance</li>
+                    <li>- Fantasy</li>
+                    <li>- Drama</li>
+                    <li>- Action</li>
+                    <li>- History</li>
+                    <li>- Science fiction</li>
+                </ul>
+            </div>
+
+            <div class="ft-faq">
+                <div class="ft-sub">FAQ:</div>
+                <ul class="ft-list">
+                    <li>- วิธีสั่งซื้อสินค้า</li>
+                    <li>- สั่งซื้อสินค้าไม่สำเร็จ</li>
+                    <li>- คำสั่งซื้อถูกยกเลิก</li>
+                    <li>- ชำระเงินไม่ตรงกับราคาสินค้าที่กำหนด</li>
+                    <li>- วิธีแก้ไขข้อมูลส่วนตัวเพื่อสั่งซื้อ</li>
+                    <li>- ต้องการเพิ่มสินค้าของตัวเองในเว็บไซต์</li>
+                </ul>
+            </div>
+
+            <div class="ft-contact">
+                <div class="ft-sub">Contact us:</div>
+                <ul class="ft-list">
+                    <li>Address: 99/999 หมู่ที่ 3</li>
+                    <li>ต.คลองหนึ่ง อ.คลองหลวง</li>
+                    <li>จ.ปทุมธานี 12120</li>
+                </ul>
+                <div class="ft-phone">
+                    <img src="img/phone.svg" class="ft-phone-icon" alt="phone icon">
+                    <span>999-999-9999</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-slogan">“สโลแกน”</div>
+
+        <div class="footer-bar">
+            <img src="img/logo.png" class="ft-logo">
+            <div class="ft-power">Power by BookStore.com</div>
+            <div class="ft-socials">
+                <img src="img/youtube.svg"><img src="img/facebook.svg"><img src="img/instagram.svg"><img
+                    src="img/mail.svg">
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

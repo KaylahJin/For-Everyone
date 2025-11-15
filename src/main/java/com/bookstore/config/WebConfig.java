@@ -1,3 +1,4 @@
+// src/main/java/com/bookstore/config/WebConfig.java
 package com.bookstore.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,16 +10,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Value("${app.upload.dir:uploads}")
     private String uploadDir;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        Path path = Paths.get(uploadDir).toAbsolutePath().normalize();
+        Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+        String location = uploadPath.toUri().toString();   // e.g. file:/.../uploads/
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + path + "/")
-                .setCachePeriod(0); // Optional: disable caching during development
+                .addResourceLocations(location)
+                .setCachePeriod(0); // disable cache while developing
     }
 }

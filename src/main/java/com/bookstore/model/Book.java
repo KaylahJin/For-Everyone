@@ -15,6 +15,10 @@ public class Book {
     private Double price;
     private String isbn;
     private String category;
+    
+    private int stock;
+    private String description;
+    private String coverUrl;
 
     // ✅ Getters & Setters
     public Long getId() { return id; }
@@ -35,4 +39,18 @@ public class Book {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
     
+    public int getStock() { return stock; }
+    public void setStock(int stock) { this.stock = stock; }
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getCoverUrl() {
+		return coverUrl;
+	}
+	public void setCoverUrl(String coverUrl) {
+		this.coverUrl = coverUrl;
+	}
 }

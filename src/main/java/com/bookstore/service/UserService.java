@@ -20,16 +20,41 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // ✅ Login: check email first, then compare password manually
+    // ✅ Login: supports both hardcoded admin and normal users
     public Optional<User> login(String email, String password) {
-        Optional<User> user = userRepository.findByEmail(email);
+        // 👑 Hardcoded admin login
+        if (email.equalsIgnoreCase("admin@admin.com") && password.equals("bookstore")) {
+            User admin = new User();
+            admin.setId(0L); // placeholder ID (not stored in DB)
+            admin.setUsername("Admin");
+            admin.setEmail(email);
+            admin.setPassword(password);
+            return Optional.of(admin);
+        }
 
-        if (user.isPresent()) {
-            if (user.get().getPassword().equals(password)) {
-                return user; // success
-            }
+        // 👤 Normal user login
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent() && user.get().getPassword().equals(password)) {
+            return user;
         }
 
         return Optional.empty(); // fail
+    }
+
+    // ✅ Logout: invalidate user session/token
+    // ในอนาคตสามารถเพิ่ม token blacklisting หรือ session invalidation ได้ที่นี่
+    public boolean logout(Long userId) {
+        // ตรวจสอบว่า user มีอยู่จริงหรือไม่ (optional)
+        if (userId != null) {
+            Optional<User> user = userRepository.findById(userId);
+            if (user.isPresent()) {
+                // ในอนาคตสามารถเพิ่ม logic สำหรับ:
+                // - ลบ JWT token จาก blacklist
+                // - ลบ session จาก database
+                // - อัปเดต last logout time
+                return true;
+            }
+        }
+        return false;
     }
 }

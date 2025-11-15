@@ -1,50 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Book Store</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="/booklist.css" />
-  <link rel="stylesheet" href="/stylesheet.css" />
-</head>
-<body>
-    <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="profile"> 
-                <img src="\img\BlankPF.png" alt="Profile">
-                <p>admin</p> 
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Book Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="booklist.css" />
+    <link rel="stylesheet" href="stylesheet.css" />
+    </head>
+    <body>
+        <div class="container">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="profile"> 
+                    <img src="img\BlankPF.png" alt="Profile">
+                    <p>admin</p> 
+                </div>
+
+                <hr>
+                
+                <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                    <a class="nav-link active">Book List</a>
+                    </li>
+                    <li class="nav-item">
+                    <a  href="addbook.html" class="nav-link">Add New Book</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="#">Order List</a>
+                    </li>
+                </ul>
+                </nav>
+
+                <button onclick="logout()">Logout</button>
             </div>
 
-            <hr>
-            
-            <nav>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                <a class="nav-link active">Book List</a>
-                </li>
-                <li class="nav-item">
-                <a  href="addbook.html" class="nav-link">Add New Book</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Order List</a>
-                </li>
-            </ul>
-            </nav>
-
-            <button>Logout</button>
+            <!-- Main Content -->
+            <div class="main-content">
+                <h1>รายการหนังสือ</h1>
+                <div class="book-list" id="bookList"></div>
+            </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <h1>รายการหนังสือ</h1>
-            <div class="book-list" id="bookList"></div>
-        </div>
-    </div>
-
-    <script src="/booklist.js"></script>
-</body>
+        <script src="booklist.js"></script>
+        <script src="logout.js"></script>
+    </body>

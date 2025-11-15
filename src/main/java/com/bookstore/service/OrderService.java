@@ -4,6 +4,7 @@ import com.bookstore.model.*;
 import com.bookstore.repo.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -11,10 +12,12 @@ public class OrderService {
 
     private final OrderRepository orderRepo;
     private final CartRepository cartRepo;
+    private final BookRepository bookRepo; // ✅ new dependency
 
-    public OrderService(OrderRepository orderRepo, CartRepository cartRepo) {
+    public OrderService(OrderRepository orderRepo, CartRepository cartRepo, BookRepository bookRepo) {
         this.orderRepo = orderRepo;
         this.cartRepo = cartRepo;
+        this.bookRepo = bookRepo;
     }
 
     // ✅ Create order from cart
@@ -45,11 +48,23 @@ public class OrderService {
         order.setStatus("PENDING_PAYMENT");
 
         for (CartItem ci : cartItems) {
+            Book book = ci.getBook();
+
+            // 🧮 Check if stock is enough
+            if (book.getStock() < ci.getQuantity()) {
+                throw new IllegalStateException("Not enough stock for book: " + book.getTitle());
+            }
+
+            // 📉 Reduce stock
+            book.setStock(book.getStock() - ci.getQuantity());
+            bookRepo.save(book); // persist change
+
+            // 🧾 Create OrderItem
             OrderItem oi = new OrderItem();
             oi.setOrder(order);
-            oi.setBook(ci.getBook());
+            oi.setBook(book);
             oi.setQuantity(ci.getQuantity());
-            oi.setPrice(ci.getBook().getPrice()); // ✅ include price
+            oi.setPrice(book.getPrice());
             order.getItems().add(oi);
         }
 

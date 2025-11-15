@@ -1,4 +1,4 @@
-// Support both signup and login pages
+// signup-login.js — unified logic for signup & login pages
 const form = document.getElementById('signupForm') || document.getElementById('loginForm');
 const toggle = document.getElementById('toggleEye');
 const pass = document.getElementById('password');
@@ -23,10 +23,10 @@ if (form) {
     const isSignup = form.id === 'signupForm';
 
     // Basic validation
-	if (!data.email || !data.password || (isSignup && !data.username)) {
-	  alert('Please fill in all fields.');
-	  return;
-	}
+    if (!data.email || !data.password || (isSignup && !data.username)) {
+      alert('Please fill in all fields.');
+      return;
+    }
     if (!isValidEmail(data.email)) {
       alert('Please enter a valid email.');
       return;
@@ -41,13 +41,20 @@ if (form) {
         ? "http://localhost:8080/api/users/signup"
         : "http://localhost:8080/api/users/login";
 
+      const payload = isSignup
+        ? { username: data.username, email: data.email, password: data.password }
+        : { email: data.email, password: data.password };
+
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
       });
 
-      const result = await res.json();
+      let result;
+      const text = await res.text();
+      try { result = JSON.parse(text); } catch { result = { message: text }; }
+
       console.log("🔹 Backend response:", result);
 
       if (res.ok) {
@@ -59,8 +66,14 @@ if (form) {
           localStorage.setItem("userId", result.id);
           localStorage.setItem("username", result.username);
           localStorage.setItem("email", result.email);
+
+          // 👑 Admin redirect logic
+          const isAdmin =
+            result.email?.toLowerCase() === "admin@admin.com" &&
+            data.password === "bookstore";
+
           alert("✅ Login successful!");
-          window.location.href = "index.html";
+          window.location.href = isAdmin ? "booklist.html" : "index.html";
         }
       } else {
         alert(`❌ ${result.message || 'Invalid credentials'}`);

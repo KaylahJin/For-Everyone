@@ -3,6 +3,7 @@ package com.bookstore.controller;
 import com.bookstore.model.User;
 import com.bookstore.service.UserService;
 import com.bookstore.dto.LoginResponse;
+import com.bookstore.dto.LogoutResponse;
 import com.bookstore.dto.SignupResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -46,18 +47,50 @@ public class UserController {
 
         if (user.isPresent()) {
             User u = user.get();
+            String role = u.getEmail().equalsIgnoreCase("admin@admin.com") ? "ADMIN" : "USER";
+
             LoginResponse response = new LoginResponse(
-                    u.getId(),                        // include user ID
+                    u.getId(),
                     "Login successful!",
                     u.getUsername(),
-                    u.getEmail()
+                    u.getEmail(),
+                    role
             );
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(401)
-                    .body(new LoginResponse(null, "Invalid email or password", null, null));
+                    .body(new LoginResponse(null, "Invalid email or password", null, null, null));
         }
     }
+
+    // Logout endpoint
+    @PostMapping("/logout")
+    public ResponseEntity<LogoutResponse> logout(@RequestBody(required = false) User logoutRequest) {
+        Long userId = null;
+        if (logoutRequest != null) {
+            userId = logoutRequest.getId();
+        }
+
+        // เรียกใช้ service เพื่อทำการ logout
+        boolean success = userService.logout(userId);
+
+        if (success || userId == null) {
+            // ถ้าไม่มี userId ก็ถือว่า logout สำเร็จ (frontend จะ clear localStorage เอง)
+            LogoutResponse response = new LogoutResponse(
+                    "Logout successful!",
+                    true
+            );
+            return ResponseEntity.ok(response);
+        } else {
+            // ถ้า userId ไม่ถูกต้อง
+            LogoutResponse response = new LogoutResponse(
+                    "User not found",
+                    false
+            );
+            return ResponseEntity.status(404).body(response);
+        }
+    }
+
 
     // ⚙️ Optional: Friendly error message for validation issues
     @ExceptionHandler(MethodArgumentNotValidException.class)

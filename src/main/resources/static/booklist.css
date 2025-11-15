@@ -1,52 +1,126 @@
-*{margin:0;
+* {
+    margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Libre Baskerville", "Noto Sans Thai" , serif;
+    font-family: "Libre Baskerville", "Noto Sans Thai", serif;
     color: #6D6553;
+}
+
+.sidebar p{
+    color: #494337;
 }
 
 .container {
     display: flex;
-    min-height: 100vh; 
+    min-height: 100vh;
+    min-height: 100vh;
+    align-items: stretch;
 }
 
+/* Main content */
 .main-content {
     flex: 1;
-    padding: 30px 90px;
+    padding: 60px 90px;
 }
 
-.book-list{
+.main-content h1{
+    color: #494337;
+}
+
+.book-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.delete-book{
     display: flex;
     align-items: center;
-    gap: 50px;
+    gap: 10px;
 }
 
-.book-card{
+.delete-book-icon {
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+/* Card ของแต่ละหนังสือ */
+.book-card {
     display: flex;
-    width: 80%;
+    align-items: center;
+    justify-content: space-between; /* จัดปุ่มอยู่ด้านขวา */
+    width: 100%;
     min-width: 800px;
     min-height: 160px;
-    border-radius: 10px;  
+    padding: 15px 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
     gap: 20px;
 }
 
-.info{
+/* Cover รูปหนังสือ */
+.book-card img {
+    width: 120px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* ข้อมูลหนังสือ */
+.info {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 10px;
-}
-.book-list img{
-    width: 120px;
-    height: 160px;
+    gap: 8px;
+    flex: 1; /* ให้ขยายเต็มพื้นที่ */
 }
 
-.stock-book{
+.info .title {
+    color: #6D6553;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.info .author,
+.info .price {
+    font-size: 16px;
+}
+
+/* ปุ่ม + / - จำนวน */
+.stock-book {
     display: flex;
+    align-items: center;
     gap: 10px;
 }
 
-.stock-book i{
-    display: flex;
+.stock-book i {
+    font-size: 24px;
     color: #B6A88A;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.stock-book i:hover {
+    transform: scale(1.2);
+}
+
+/* จำนวน */
+.stock-book .quantity-input {
+    width: 25px;
+    text-align: center;
+    font-size: 16px;
+    border: 0px;
+    
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: none;
 }
