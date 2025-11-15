@@ -29,10 +29,14 @@
                     <img src="img/cart-icon.svg" alt="">
                     <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
                 </a>
-                <a href="login.html" class="icon" aria-label="Login">
-                    <img src="img/BlankPF.png" alt="">
-                </a>
-            </div>
+                <div class="profile-dropdown">
+                    <img src="img/BlankPF.png" alt="Profile" class="profile-pic">
+
+                    <div class="dropdown-menu">
+                        <a href="OrderStatus.html">Order Status</a>
+                        <a href="#" onclick="logout(); return false;">Logout</a>
+                    </div>
+                </div>
         </div>
     </header>
 
