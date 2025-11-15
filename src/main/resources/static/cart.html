@@ -8,26 +8,29 @@
   <title>🛒 My Cart</title>
 </head>
 <body>
-  <header class="sitebar">
-    <div class="row">
-      <div class="header-container" style="display:flex;align-items:center;gap:12px;width:100%;">
-        <div class="logo"><img src="img/logo.png" alt="Bookstore Logo" /></div>
-        <div class="search-bar" style="flex:1;display:flex;gap:8px;align-items:center;">
-          <input type="text" placeholder="Search" aria-label="Search books" />
-          <button aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+  <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="img/logo.png" alt="Bookstore Logo">
+            </div>
+
+            <form id="searchForm" class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search" aria-label="Search books">
+                <button type="submit" class="search-image-btn" aria-label="Search">
+                    <img src="img/search.svg" alt="Search">
+                </button>
+            </form>
+
+            <div class="header-icons">
+                <a href="cart.html" class="cart" aria-label="Open cart">
+                    <img src="img/cart-icon.svg" alt="">
+                    <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
+                </a>
+                <a href="login.html" class="icon" aria-label="Login">
+                    <img src="img/BlankPF.png" alt="">
+                </a>
+            </div>
         </div>
-        <div class="header-cart">
-          <a href="cart.html" class="cart" aria-label="Open cart">
-            <img src="img/cart-icon.svg" alt="" />
-          </a>
-        </div>
-        <div class="header-profile">
-          <a href="login.html" class="icon" aria-label="Login">
-            <img src="img/BlankPF.png" alt="" />
-          </a>
-        </div>
-      </div>
-    </div>
   </header>
 
   <main class="container">
@@ -257,5 +260,6 @@
 
     loadCart();
   </script>
+  <script src="logout.js"></script>
 </body>
 </html>

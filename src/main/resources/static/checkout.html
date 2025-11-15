@@ -15,8 +15,9 @@
 
   <header class="header">
     <div class="header-container">
-      <div class="logo"><img src="img/logo.png" alt="Bookstore Logo"></div>
-
+            <div class="logo">
+                <img src="img/logo.png" alt="Bookstore Logo">
+            </div>
       <div class="search-bar">
         <input type="text" placeholder="Search" aria-label="Search books">
         <button aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -29,13 +30,24 @@
         </a>
       </div>
 
-      <div class="header-profile">
-        <a href="login.html" class="icon" aria-label="Login">
-          <img src="img/BlankPF.png" alt="">
-        </a>
-      </div>
-    </div>
-  </header>
+      <form id="searchForm" class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search" aria-label="Search books">
+                <button type="submit" class="search-image-btn" aria-label="Search">
+                    <img src="img/search.svg" alt="Search">
+                </button>
+            </form>
+
+            <div class="header-icons">
+                <a href="cart.html" class="cart" aria-label="Open cart">
+                    <img src="img/cart-icon.svg" alt="">
+                    <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
+                </a>
+                <a href="login.html" class="icon" aria-label="Login">
+                    <img src="img/BlankPF.png" alt="">
+                </a>
+            </div>
+        </div>
+    </header>
 
   <div class="content back">
     <a href="cart.html" class="back-to-cart-btn"><span>← Back to Cart</span></a>
@@ -263,5 +275,6 @@
   </footer>
 
   <script src="checkout.js"></script>
+  <script src="logout.js"></script>
 </body>
 </html>
