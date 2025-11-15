@@ -36,96 +36,132 @@
         </div>
     </header>
 
-   
+
     <!-- Books Section -->
     <section class="books-section">
         <div class="books-layout">
-    
+
             <!-- 📌 Filter Sidebar (ซ้าย) -->
-    <aside class="filter-sidebar">
-        <h3>Filter</h3>
-        <ul>
-            <li><input type="checkbox" class="filter-checkbox" value="Thriller"> Thriller</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Fantasy"> Fantasy</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Romance"> Romance</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Horror"> Horror</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Sci-Fi"> Sci-Fi</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Comic"> Comic</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Self-Help"> Self - Help</li>
-        </ul>
-    </aside>
-    
+            <aside class="filter-sidebar">
+                <aside class="filter-sidebar">
+                    <h3>Filter</h3>
+                    <ul id="categoryList"></ul>
+                </aside>
+            </aside>
+
             <!-- 📚 Book Grid (ขวา) -->
             <div id="bookList" class="books-grid">Loading...</div>
-    
+
         </div>
     </section>
 
     <!--  Script zone -->
-        <script>
-            const apiBase = "http://localhost:8080/api/books";
-            const cartApi = "http://localhost:8080/api/cart";
+    <script>
+        const apiBase = "http://localhost:8080/api/books";
+        const cartApi = "http://localhost:8080/api/cart";
 
-            let allBooks = []; // เก็บหนังสือทั้งหมดไว้สำหรับ filter
+        let allBooks = []; // เก็บหนังสือทั้งหมดไว้สำหรับ filter
 
-            // โหลดหนังสือทั้งหมดครั้งเดียว
-            function loadBooks() {
-                fetch(apiBase)
-                    .then(r => r.json())
-                    .then(data => {
-                        allBooks = data;          // เก็บไว้ใช้ filter
-                        renderBooks(allBooks);    // แสดงทั้งหมด
-                    })
-                    .catch(() => {
-                        document.getElementById("bookList").innerHTML =
-                            "<div class='empty'>❌ Failed to load books.</div>";
+        // โหลดหนังสือทั้งหมดครั้งเดียว
+        function loadBooks() {
+            fetch(apiBase)
+                .then(r => r.json())
+                .then(data => {
+                    allBooks = data;
+                    renderBooks(allBooks);
+                    generateCategoryFilters(); // ← มาอยู่ตรงนี้
+                })
+                .catch(() => {
+                    document.getElementById("bookList").innerHTML =
+                        "<div class='empty'>❌ Failed to load books.</div>";
+                });
+        }
+
+        function generateCategoryFilters() {
+            const categorySet = new Set();
+
+            allBooks.forEach(book => {
+                if (book.category) {
+                    book.category.split(",").forEach(cat => {
+                        categorySet.add(cat.trim());
                     });
-            }
-
-            // ค้นหา + ฟิลเตอร์ (ทำงานร่วมกัน)
-            function searchAndFilter() {
-                    const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
-                    const selected = [...document.querySelectorAll(".filter-checkbox:checked")]
-                        .map(cb => cb.value.toLowerCase()); // ตรงนี้ก็ lower
-
-                    let result = allBooks;
-
-                    // 1) ค้นหาแบบ ignore case (ตัวพิมพ์เล็ก/ใหญ่ไม่สน)
-                    if (keyword) {
-                        result = result.filter(book =>
-                            book.title.toLowerCase().includes(keyword)
-                        );
-                    }
-
-                    // 2) ฟิลเตอร์หมวดแบบ ignore case
-                    if (selected.length > 0) {
-                        result = result.filter(book => {
-                            if (!book.category) return false;
-
-                            const bookCats = book.category
-                                .split(",")
-                                .map(c => c.trim().toLowerCase());
-
-                            return selected.some(cat => bookCats.includes(cat));
-                        });
-                    }
-
-                    renderBooks(result);
                 }
-
-            // Event ค้นหา
-            document.getElementById("searchForm").addEventListener("submit", function (e) {
-                e.preventDefault();
-                searchAndFilter();
             });
 
-            // Event ฟิลเตอร์
+            const categories = Array.from(categorySet).sort();
+            const ul = document.getElementById("categoryList");
+            ul.innerHTML = "";
+
+            categories.forEach(cat => {
+                ul.innerHTML += `
+            <li>
+                <input type="checkbox" class="filter-checkbox" value="${cat}">
+                ${cat}
+            </li>
+        `;
+            });
+
+            // bind events (ต้อง bind หลังสร้าง checkbox)
             document.querySelectorAll(".filter-checkbox").forEach(cb => {
                 cb.addEventListener("change", searchAndFilter);
             });
+        }
 
-            // Render หนังสือ
-            function renderBooks(books) {
+        // ค้นหา + ฟิลเตอร์ (ทำงานร่วมกัน)
+        function searchAndFilter() {
+            const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+            const selected = [...document.querySelectorAll(".filter-checkbox:checked")]
+                .map(cb => cb.value.toLowerCase()); // ตรงนี้ก็ lower
+
+            let result = allBooks;
+
+            // 1) ค้นหาแบบ ignore case (ตัวพิมพ์เล็ก/ใหญ่ไม่สน)
+            if (keyword) {
+                result = result.filter(book =>
+                    book.title.toLowerCase().includes(keyword)
+                );
+            }
+
+            // 2) ฟิลเตอร์หมวดแบบ ignore case
+            if (selected.length > 0) {
+                result = result.filter(book => {
+                    if (!book.category) return false;
+
+                    // normalize ฟอร์แมต เช่น sci-fi, sci - fi, sci fi, sci_fi
+                    const normalizedBookCats = book.category
+                        .split(",")
+                        .map(c =>
+                            c
+                                .toLowerCase()
+                                .replace(/[\s_-]+/g, "")   // ลบ space, -, _
+                        );
+
+                    const normalizedSelected = selected.map(cat =>
+                        cat
+                            .toLowerCase()
+                            .replace(/[\s_-]+/g, "")
+                    );
+
+                    return normalizedSelected.some(cat => normalizedBookCats.includes(cat));
+                });
+            }
+
+            renderBooks(result);
+        }
+
+        // Event ค้นหา
+        document.getElementById("searchForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            searchAndFilter();
+        });
+
+        // Event ฟิลเตอร์
+        document.querySelectorAll(".filter-checkbox").forEach(cb => {
+            cb.addEventListener("change", searchAndFilter);
+        });
+
+        // Render หนังสือ
+        function renderBooks(books) {
                 const container = document.getElementById("bookList");
                 container.innerHTML = "";
 
@@ -135,77 +171,85 @@
                 }
 
                 books.forEach(b => {
+                    // ✅ ประกาศตัวแปรที่ใช้ใน template
+                    const title = b.title || "Book’s name";
+                    const author = b.author || "Author’s name";
+                    const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
+                    const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
+
                     const wrap = document.createElement("div");
                     wrap.className = "book-wrap";
 
                     wrap.innerHTML = `
-                        <article class="book-card">
-                            <img class="book-cover" src="${b.coverUrl || ""}" alt="">
-                            <h3 class="book-title">${b.title}</h3>
-                            <div class="book-author">${b.author}</div>
-                            <div class="price-tag">฿${(b.price ?? 0).toLocaleString()}</div>
-                        </article>
-                        <button class="btn-add">+ Add to cart</button>
-                        `;
+    <a href="bookdetail.html?id=${b.id}" class="book-link">
+        <article class="book-card">
+            <img class="book-cover" src="${cover}" alt="Cover of ${title}">
+            <h3 class="book-title">${title}</h3>
+            <div class="book-author">${author}</div>
+            <div class="price-tag">฿${price}</div>
+        </article>
+    </a>
+    <button class="btn-add">+ Add to cart</button>
+`;
 
                     wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
                     container.appendChild(wrap);
                 });
             }
 
-            // ===== Cart =====
-            async function addToCart(bookId) {
-                let userId = localStorage.getItem("userId");
-                if (!userId) {
-                    alert("⚠️ Please log in first!");
-                    window.location.href = "login.html";
-                    return;
+        // ===== Cart =====
+        async function addToCart(bookId) {
+            let userId = localStorage.getItem("userId");
+            if (!userId) {
+                alert("⚠️ Please log in first!");
+                window.location.href = "login.html";
+                return;
+            }
+            userId = Number(userId);
+
+            const cartItem = { userId, book: { id: bookId }, quantity: 1 };
+
+            try {
+                const res = await fetch(`${cartApi}/add`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(cartItem)
+                });
+
+                if (res.ok) {
+                    await fetchCartCount(userId);
+                    alert("✅ Book added to cart!");
+                } else {
+                    alert("❌ Failed to add to cart");
                 }
-                userId = Number(userId);
-
-                const cartItem = { userId, book: { id: bookId }, quantity: 1 };
-
-                try {
-                    const res = await fetch(`${cartApi}/add`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(cartItem)
-                    });
-
-                    if (res.ok) {
-                        await fetchCartCount(userId);
-                        alert("✅ Book added to cart!");
-                    } else {
-                        alert("❌ Failed to add to cart");
-                    }
-                } catch {
-                    alert("⚠️ Could not reach backend");
-                }
+            } catch {
+                alert("⚠️ Could not reach backend");
             }
+        }
 
-            async function fetchCartCount(userId) {
-                const res = await fetch(`${cartApi}/${userId}`);
-                const items = await res.json();
-                const count = items.reduce((sum, item) => sum + (item.quantity || 0), 0);
-                setCartCount(userId, count);
-            }
+        async function fetchCartCount(userId) {
+            const res = await fetch(`${cartApi}/${userId}`);
+            const items = await res.json();
+            const count = items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            setCartCount(userId, count);
+        }
 
-            function badgeKey(userId) { return `cartCount_${userId || 'guest'}`; }
-            function getCartCount(userId) { return Number(localStorage.getItem(badgeKey(userId))) || 0; }
-            function setCartCount(userId, n) {
-                localStorage.setItem(badgeKey(userId), String(n));
-                renderCartBadge(userId);
-            }
-            function renderCartBadge(userId) {
-                const el = document.getElementById('cartBadge');
-                const n = getCartCount(userId);
-                el.textContent = n;
-                el.classList.toggle('is-zero', n <= 0);
-            }
+        function badgeKey(userId) { return `cartCount_${userId || 'guest'}`; }
+        function getCartCount(userId) { return Number(localStorage.getItem(badgeKey(userId))) || 0; }
+        function setCartCount(userId, n) {
+            localStorage.setItem(badgeKey(userId), String(n));
+            renderCartBadge(userId);
+        }
+        function renderCartBadge(userId) {
+            const el = document.getElementById('cartBadge');
+            const n = getCartCount(userId);
+            el.textContent = n;
+            el.classList.toggle('is-zero', n <= 0);
+        }
 
-            // Start
-            document.addEventListener('DOMContentLoaded', () => loadBooks());
-        </script>
+        // Start
+        document.addEventListener('DOMContentLoaded', () => loadBooks());
+    </script>
 
     <!-- Footer -->
     <footer class="footer">
