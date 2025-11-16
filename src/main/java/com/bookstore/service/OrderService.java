@@ -1,7 +1,10 @@
 package com.bookstore.service;
 
-import com.bookstore.model.*;
-import com.bookstore.repo.*;
+import com.bookstore.model.CartItem;
+import com.bookstore.model.Order;
+import com.bookstore.model.OrderItem;
+import com.bookstore.repo.CartRepository;
+import com.bookstore.repo.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,15 +15,15 @@ public class OrderService {
 
     private final OrderRepository orderRepo;
     private final CartRepository cartRepo;
-    private final BookRepository bookRepo; // ✅ new dependency
 
-    public OrderService(OrderRepository orderRepo, CartRepository cartRepo, BookRepository bookRepo) {
+    public OrderService(OrderRepository orderRepo, CartRepository cartRepo) {
         this.orderRepo = orderRepo;
         this.cartRepo = cartRepo;
-        this.bookRepo = bookRepo;
     }
 
-    // ✅ Create order from cart
+    // ===========================
+    // Create order from cart
+    // ===========================
     @Transactional
     public Order confirmOrder(Long userId) {
         List<CartItem> cartItems = cartRepo.findByUserId(userId);
@@ -28,17 +31,14 @@ public class OrderService {
             throw new IllegalStateException("Cart is empty");
         }
 
-        // ✅ Calculate subtotal
         double subTotal = cartItems.stream()
                 .mapToDouble(ci -> ci.getBook().getPrice() * ci.getQuantity())
                 .sum();
 
-        // ✅ Automatically compute shipping + discount
         double shippingFee = subTotal > 0 ? 40 : 0;
         double discount = subTotal >= 300 ? 40 : 0;
         double total = subTotal + shippingFee - discount;
 
-        // ✅ Build and save order
         Order order = new Order();
         order.setUserId(userId);
         order.setSubTotal(subTotal);
@@ -48,38 +48,56 @@ public class OrderService {
         order.setStatus("PENDING_PAYMENT");
 
         for (CartItem ci : cartItems) {
-            Book book = ci.getBook();
-
-            // 🧮 Check if stock is enough
-            if (book.getStock() < ci.getQuantity()) {
-                throw new IllegalStateException("Not enough stock for book: " + book.getTitle());
-            }
-
-            // 📉 Reduce stock
-            book.setStock(book.getStock() - ci.getQuantity());
-            bookRepo.save(book); // persist change
-
-            // 🧾 Create OrderItem
             OrderItem oi = new OrderItem();
             oi.setOrder(order);
-            oi.setBook(book);
+            oi.setBook(ci.getBook());
             oi.setQuantity(ci.getQuantity());
-            oi.setPrice(book.getPrice());
+            oi.setPrice(ci.getBook().getPrice());
             order.getItems().add(oi);
         }
 
         Order saved = orderRepo.save(order);
-        cartRepo.deleteByUserId(userId); // ✅ Clear cart
+        cartRepo.deleteByUserId(userId);
         return saved;
     }
 
-    // ✅ Update order (for address or status updates)
+    // ===========================
+    // Update whole order
+    // ===========================
     public Order updateOrder(Order order) {
         return orderRepo.save(order);
     }
 
-    // ✅ Get all orders for one user
+    // ===========================
+    // For customer: view own orders
+    // ===========================
     public List<Order> getOrdersForUser(Long userId) {
         return orderRepo.findByUserId(userId);
+    }
+
+    // ✅ Get single order by its ID (ใช้กับ admin-checkout)
+    public Order getOrderById(Long orderId) {
+        return orderRepo.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+    }
+
+
+    // ===========================
+    // ADMIN — GET ALL ORDERS
+    // ===========================
+    public List<Order> getAllOrders() {
+        return orderRepo.findAll();
+    }
+
+    // ===========================
+    // ADMIN — UPDATE ORDER STATUS
+    // ===========================
+    public Order updateOrderStatus(Long orderId, String status) {
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        order.setStatus(status);
+
+        return orderRepo.save(order);
     }
 }

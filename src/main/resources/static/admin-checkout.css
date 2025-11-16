@@ -1,0 +1,233 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f1e8;
+            color: #5a5a5a;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .back-link {
+            color: #8b7355;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 30px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #6b5d4f;
+            margin-bottom: 15px;
+            font-weight: normal;
+        }
+
+        .username {
+            font-size: 16px;
+            color: #8b7355;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #6b5d4f;
+            margin-bottom: 30px;
+            font-weight: normal;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-left: 60px;
+        }
+
+        .item-quantity {
+            font-size: 18px;
+            color: #5a5a5a;
+            margin-right: 30px;
+        }
+
+        .item-name {
+            font-size: 18px;
+            color: #5a5a5a;
+            flex: 1;
+        }
+
+        .item-price {
+            font-size: 20px;
+            color: #6b5d4f;
+            font-weight: normal;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 8px 0;
+            padding-right: 60px;
+            font-size: 18px;
+        }
+
+        .summary-row .label {
+            margin-right: 80px;
+            color: #5a5a5a;
+        }
+
+        .summary-row .value {
+            min-width: 80px;
+            text-align: right;
+            color: #5a5a5a;
+        }
+
+        .summary-row.total {
+            font-size: 20px;
+            font-weight: 600;
+            color: #6b5d4f;
+            margin-top: 10px;
+        }
+
+        .payment-info {
+            padding-left: 60px;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 8px 0;
+            font-size: 18px;
+        }
+
+        .info-label {
+            min-width: 120px;
+            color: #5a5a5a;
+        }
+
+        .info-value {
+            color: #5a5a5a;
+        }
+
+        .slip-preview {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .slip-icon {
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            border: 2px solid #6b5d4f;
+            border-radius: 4px;
+            padding: 5px;
+        }
+
+        .slip-link {
+            color: #6b5d4f;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .slip-link:hover {
+            color: #8b7355;
+        }
+
+        .slip-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slip-modal.active {
+            display: flex;
+        }
+
+        .slip-modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .slip-modal-image {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 8px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 36px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0 10px;
+        }
+
+        .close-modal:hover {
+            color: #ccc;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #8b7355;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #d9534f;
+        }
+
+        .no-slip-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 16px;
+        }

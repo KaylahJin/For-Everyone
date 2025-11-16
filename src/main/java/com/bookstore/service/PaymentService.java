@@ -1,4 +1,5 @@
 package com.bookstore.service;
+import java.util.List;
 
 import com.bookstore.model.Order;
 import com.bookstore.model.Payment;
@@ -47,4 +48,10 @@ public class PaymentService {
 
         return paymentRepo.save(p);
     }
+
+    // ✅ Find payments by order ID
+    public List<Payment> findByOrderId(Long orderId) {
+        return paymentRepo.findByOrderId(orderId);
+    }
+
 }

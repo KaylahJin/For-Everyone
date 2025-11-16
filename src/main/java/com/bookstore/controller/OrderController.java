@@ -58,4 +58,35 @@ public class OrderController {
                 .map(OrderResponse::from)
                 .toList();
     }
+
+    // ✅ Admin: get ALL orders
+        // ✅ Admin: get ALL orders
+        @GetMapping("/all")
+        public List<OrderResponse> getAllOrders() {
+            return orderService.getAllOrders()
+                    .stream()
+                    .map(OrderResponse::from)
+                    .toList();
+        }
+
+        // ✅ Admin: update order status (PENDING_PAYMENT → COMPLETE / CANCELLED)
+    @PutMapping("/{orderId}/status")
+    public ResponseEntity<OrderResponse> updateStatus(
+            @PathVariable Long orderId,
+            @RequestBody Map<String, String> body) {
+
+        String status = body.get("status");  // "COMPLETE" หรือ "CANCELLED"
+        Order updated = orderService.updateOrderStatus(orderId, status);
+        return ResponseEntity.ok(OrderResponse.from(updated));
+    }
+
+    // ✅  Get single order by orderId (ใช้ใน admin-checkout.html)
+    @GetMapping("/order/{orderId}")
+    public OrderResponse getOrderById(@PathVariable Long orderId) {
+        Order order = orderService.getOrderById(orderId);
+        return OrderResponse.from(order);
+    }
+
+
+
 }

@@ -1,5 +1,5 @@
 package com.bookstore.controller;
-
+import java.util.List;
 import com.bookstore.dto.OrderItemResponse;
 import com.bookstore.dto.ShippingAddressResponse;
 import com.bookstore.model.Order;
@@ -160,6 +160,13 @@ public class PaymentController {
             this.fileName = fileName;
             this.url = url;
         }
+    }
+
+    // ✅ Get payments by order ID (for admin to view slip)
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<List<Payment>> getPaymentsByOrderId(@PathVariable Long orderId) {
+        List<Payment> payments = service.findByOrderId(orderId);
+        return ResponseEntity.ok(payments);
     }
 }
 

@@ -34,7 +34,7 @@ public class ShippingAddressService {
 
     @Transactional(readOnly = true)
     public List<ShippingAddress> listByUser(Long userId) {
-        return repo.findByUserId(userId);
+    return repo.findByUser_Id(userId);   // ✅ ชื่อ match กับ repository แล้ว
     }
 
     @Transactional(readOnly = true)
