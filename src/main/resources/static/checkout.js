@@ -246,8 +246,8 @@ paymentForm?.addEventListener('submit', async (e) => {
 backHomeBtn?.addEventListener('click', () => window.location.href = 'index.html');
 
 /* ---------- init ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  const uid = getUserId(); // ตอนนี้จะไม่มีทางเป็น null แล้ว
+document.addEventListener('DOMContentLoaded', ()=>{
+  const uid = getUserId(); if (!uid) return;
   bindAccordion();
   goToStep(1);
   loadCartSummary();

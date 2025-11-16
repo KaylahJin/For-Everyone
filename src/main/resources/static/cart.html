@@ -204,12 +204,12 @@
     const userIdRaw = localStorage.getItem("userId");
     const userId    = userIdRaw && userIdRaw !== "null" ? Number(userIdRaw) : null;
 
-    // if (!userId || !Number.isFinite(userId)) {
-    //   alert("Please log in first.");
-    //   window.location.href = "login.html";
-    // }
+    if (!userId || !Number.isFinite(userId)) {
+      alert("Please log in first.");
+      window.location.href = "login.html";
+    }
 
-    // const THB = n => `฿${n.toFixed(0)}`;
+    const THB = n => `฿${n.toFixed(0)}`;
 
     function loadCart() {
       fetch(`${apiCart}/${userId}`)
