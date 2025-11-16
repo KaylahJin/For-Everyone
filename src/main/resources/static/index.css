@@ -185,7 +185,7 @@ body {
 }
 
 .books-section {
-    max-width: 1200px;
+    max-width: 1440px;
     margin: 55px auto 60px;
     padding: 0 12px;
 }
@@ -214,7 +214,7 @@ body {
 
 /* การ์ดเล่มหนังสือ */
 .book-wrap {
-    width: 201px;
+    width: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -222,9 +222,9 @@ body {
 }
 
 .book-card {
-    width: 201px;
-    height: 310px;
-    padding: 16px 0 10px;
+    width: 200px;
+    height: 350px;
+    padding: 16px 10px 10px 10px;
     background: var(--card-bg);
     border-radius: 10px;
     border: 0;
@@ -240,8 +240,8 @@ body {
 .book-cover,
 .book-s-pic {
     width: 150px;
-    height: 181px;
-    aspect-ratio: 150/181;
+    height: 180px;
+    aspect-ratio: 150/180;
     object-fit: cover;
     border-radius: 10px;
     margin-top: 12px;
