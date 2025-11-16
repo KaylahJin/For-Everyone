@@ -118,39 +118,41 @@
 
         // แสดงหนังสือ
         function renderBooks(books) {
-                const container = document.getElementById("bookList");
-                container.innerHTML = "";
+            const container = document.getElementById("bookList");
+            container.innerHTML = "";
 
-                if (!books || books.length === 0) {
-                    container.innerHTML = `<div class="empty">No books found.</div>`;
-                    return;
-                }
+            if (!books || books.length === 0) {
+                container.innerHTML = `<div class="empty">No books found.</div>`;
+                return;
+            }
 
-                // จำกัดเหลือ 8 เล่ม
-                const limitedBooks = books.slice(0, 8);
+            // จำกัดเหลือ 8 เล่ม
+            const limitedBooks = books.slice(0, 8);
 
-                limitedBooks.forEach(b => {
-                    const title = b.title || "Book’s name";
-                    const author = b.author || "Author’s name";
-                    const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
-                    const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
+            limitedBooks.forEach(b => {
+                const title = b.title || "Book’s name";
+                const author = b.author || "Author’s name";
+                const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
+                const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
 
-                    const wrap = document.createElement("div");
-                    wrap.className = "book-wrap";
-                    wrap.innerHTML = `
-          <article class="book-card">
+                const wrap = document.createElement("div");
+                wrap.className = "book-wrap";
+                wrap.innerHTML = `
+    <a href="bookdetail.html?id=${b.id}" class="book-link">
+        <article class="book-card">
             <img class="book-cover" src="${cover}" alt="Cover of ${title}">
             <h3 class="book-title">${title}</h3>
             <div class="book-author">${author}</div>
             <div class="price-tag">฿${price}</div>
-          </article>
-          <button class="btn-add">+ Add to cart</button>
-        `;
+        </article>
+    </a>
+    <button class="btn-add">+ Add to cart</button>
+`;
 
-                    wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
-                    container.appendChild(wrap);
-                });
-            }
+                wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
+                container.appendChild(wrap);
+            });
+        }
 
 
         // Add to cart และอัปเดต badge ตาม backend

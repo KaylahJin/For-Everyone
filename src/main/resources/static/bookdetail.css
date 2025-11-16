@@ -276,15 +276,17 @@ body {
 }
 
 .desc-text {
+    margin-top: 16px;
     font-size: 18px;
     line-height: 1.6;
     white-space: pre-line;
+    margin-bottom: 21px;
 }
 
 .tag-line,
 .price-line {
     font-size: 18px;
-    margin-top: 15px;
+    margin-top: 12px;
 }
 
 .book-left {
@@ -332,4 +334,3 @@ body {
     border: none;
     cursor: pointer;
 }
-

@@ -345,3 +345,9 @@ body {
     transition: color 0.3s ease;
     margin-bottom: 35px;
 }
+
+.book-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
