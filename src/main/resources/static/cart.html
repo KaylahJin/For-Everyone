@@ -3,15 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="stylesheet.css" />
   <link rel="stylesheet" href="./cart.css" />
-  <title>🛒 My Cart</title>
+  <title>Book Store</title>
 </head>
 <body>
   <header class="header">
         <div class="header-container">
             <div class="logo">
-                <img src="img/logo.png" alt="Bookstore Logo">
+              <a href="index.html">
+                <img src="img/logo.png" href="index.html" alt="Bookstore Logo">
+              </a>
             </div>
 
             <form id="searchForm" class="search-bar">
@@ -199,12 +204,12 @@
     const userIdRaw = localStorage.getItem("userId");
     const userId    = userIdRaw && userIdRaw !== "null" ? Number(userIdRaw) : null;
 
-    if (!userId || !Number.isFinite(userId)) {
-      alert("Please log in first.");
-      window.location.href = "login.html";
-    }
+    // if (!userId || !Number.isFinite(userId)) {
+    //   alert("Please log in first.");
+    //   window.location.href = "login.html";
+    // }
 
-    const THB = n => `฿${n.toFixed(0)}`;
+    // const THB = n => `฿${n.toFixed(0)}`;
 
     function loadCart() {
       fetch(`${apiCart}/${userId}`)

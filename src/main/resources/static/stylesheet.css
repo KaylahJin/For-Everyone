@@ -6,7 +6,7 @@
   --accent-color1: #F6F0BE;
   --accent-color2: #DDE7CE;
   --text-color: #6d6553;
-  --font-family: "libre-baskerville";
+  --font-family: "Libre Baskerville", "Noto Sans Thai" , serif;
 }
 
 * {
@@ -23,7 +23,7 @@ body {
 /* HEADER */
 .header {
   background-color: #E2DCD0;
-  height: 96px;
+  min-height: 96px;
   display: flex;
   align-items: center;
 }

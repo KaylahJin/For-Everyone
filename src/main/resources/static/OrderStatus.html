@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Order Status</title>
+<title>Book Store</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
@@ -246,6 +246,38 @@
 </head>
 <body>
 
+<header class="header">
+        <div class="header-container">
+            <div class="logo">
+              <a href="index.html">
+                <img src="img/logo.png" href="index.html" alt="Bookstore Logo">
+              </a>
+            </div>
+
+            <form id="searchForm" class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search" aria-label="Search books">
+                <button type="submit" class="search-image-btn" aria-label="Search">
+                    <img src="img/search.svg" alt="Search">
+                </button>
+            </form>
+
+            <div class="header-icons">
+                <a href="cart.html" class="cart" aria-label="Open cart">
+                    <img src="img/cart-icon.svg" alt="">
+                    <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
+                </a>
+                <div class="profile-dropdown">
+                    <img src="img/BlankPF.png" alt="Profile" class="profile-pic">
+
+                    <div class="dropdown-menu">
+                        <a href="OrderStatus.html">Order Status</a>
+                        <a href="#" onclick="logout(); return false;">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+</header>
+
 <!-- Main Content -->
 <div class="container">
   <a class="back-link" onclick="window.history.back()">&lt;Back</a>
@@ -413,6 +445,7 @@ async function loadOrders() {
         <thead>
           <tr>
             <th>Book</th>
+            <th>Author</th>
             <th>Time</th>
             <th>Date</th>
             <th>Amount</th>
@@ -424,13 +457,12 @@ async function loadOrders() {
     `;
 
     for (const order of orders) {
-      // 👇 แก้ตรงนี้ - แสดงแม้ไม่มี items
+      // ถ้าไม่มี items
       if (!order.items || order.items.length === 0) {
-        // กรณีไม่มี items แสดงแค่ order info
         tableHTML += `
           <tr>
-            <td>#${order.id}</td>
             <td><em>No items</em></td>
+            <td>-</td>
             <td>${formatTime(order.orderDate)}</td>
             <td>${formatDate(order.orderDate)}</td>
             <td>-</td>
@@ -441,16 +473,30 @@ async function loadOrders() {
           </tr>
         `;
       } else {
-        // กรณีมี items แสดงทุก item
+        // มี items → แสดงทุกเล่ม
         for (const item of order.items) {
+          const title =
+            item.title ||
+            (item.book && item.book.title) ||
+            "Book's name";
+
+          const author =
+            item.author ||
+            item.authorName ||
+            (item.book && item.book.author) ||
+            "Author's name";
+
+          const quantity = item.quantity || 1;
+          const price = item.price ? (item.price * quantity).toFixed(0) : '0';
+
           tableHTML += `
             <tr>
-              <td>#${order.id}</td>
-              <td>${item.title || "Book's name"}</td>
+              <td>${title}</td>
+              <td>${author}</td>
               <td>${formatTime(order.orderDate)}</td>
               <td>${formatDate(order.orderDate)}</td>
-              <td>${item.quantity || 1}</td>
-              <td>฿${(item.price * item.quantity).toFixed(0)}</td>
+              <td>${quantity}</td>
+              <td>฿${price}</td>
               <td class="${getStatusClass(order.status)}">
                 ${order.status === 'PENDING_PAYMENT' ? 'Pending' : order.status}
               </td>
