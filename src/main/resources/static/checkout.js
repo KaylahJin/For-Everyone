@@ -15,14 +15,75 @@ function getUserId() {
   }
   return id;
 }
-function badgeKey(uid){ return `cartCount_${uid}`; }
-function updateCartBadge(uid, n){
-  const badge = $id('cartBadge');
-  if (!badge) return;
-  const val = Math.max(0, Number(n)||0);
-  badge.textContent = val > 0 ? String(val) : '';
-  badge.style.display = val > 0 ? 'inline-block' : 'none';
+
+// Add to cart และอัปเดต badge ตาม backend
+async function addToCart(bookId) {
+  let userId = localStorage.getItem("userId");
+  if (!userId) {
+    alert("⚠️ Please log in first!");
+    window.location.href = "login.html";
+    return;
+  }
+  userId = Number(userId);
+  if (!bookId) return alert("❌ Missing book ID");
+
+  const cartItem = { userId, book: { id: bookId }, quantity: 1 };
+  try {
+    const res = await fetch(`${cartApi}/add`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cartItem)
+    });
+    const text = await res.text();
+    if (res.ok) {
+      await fetchCartCount(userId); // ✅ ดึงข้อมูลจริงจาก backend
+      alert("✅ Book added to cart!");
+    } else {
+      console.error("❌ Backend error:", text);
+      alert("❌ Failed to add to cart");
+    }
+  } catch (err) {
+    console.error("⚠️ Network error:", err);
+    alert("⚠️ Could not reach backend");
+  }
 }
+// ดึงจำนวนสินค้าในตะกร้าจริงจาก backend
+async function fetchCartCount(userId) {
+  try {
+    const res = await fetch(`${cartApi}/${userId}`);
+    if (!res.ok) throw new Error("Fetch failed");
+    const items = await res.json();
+    const count = Array.isArray(items)
+      ? items.reduce((sum, item) => sum + (item.quantity || 0), 0)
+      : 0;
+    setCartCount(userId, count);
+  } catch (err) {
+    console.error("⚠️ Failed to fetch cart count:", err);
+  }
+}
+
+// === badge helpers ===
+function badgeKey(userId) { return `cartCount_${userId || 'guest'}`; }
+function getCartCount(userId) { const v = localStorage.getItem(badgeKey(userId)); return v ? Number(v) : 0; }
+function setCartCount(userId, n) { localStorage.setItem(badgeKey(userId), String(Math.max(0, n | 0))); renderCartBadge(userId); }
+function renderCartBadge(userId) {
+  const el = document.getElementById('cartBadge');
+  if (!el) return;
+  const n = getCartCount(userId);
+  el.textContent = n;
+  el.classList.toggle('is-zero', n <= 0);
+}
+
+// โหลดข้อมูลจริงเมื่อหน้าเริ่ม
+document.addEventListener('DOMContentLoaded', async () => {
+  const uid = localStorage.getItem("userId");
+  if (uid) {
+    await fetchCartCount(uid); // ดึงข้อมูลจาก backend
+  } else {
+    renderCartBadge(uid);
+  }
+});
+
 
 /* ---------- accordion & step gating ---------- */
 const stepEls = $$('.Step');

@@ -331,3 +331,29 @@ border-bottom: 1px solid #E3DEBB;
 .Step3{
     margin-bottom: 100px;
 }
+
+/* === Cart badge === */
+.header-icons .cart {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    border-radius: 50%;
+    background: #ff3b00;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 0 0 2px #E2DCD0;
+}
+
+.cart-badge.is-zero {
+    display: none;
+}

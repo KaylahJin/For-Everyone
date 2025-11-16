@@ -1,247 +1,136 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Book Store</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="stylesheet.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap"
+    rel="stylesheet">
 
-  body {
-    font-family: 'Libre Baskerville', 'Noto Sans Thai', serif;
-    width: 100%;
-    background-color: #f5f1e8;
-    color: #5a5a5a;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-
-  /* Main Content */
-  .container {
-    width: 1350px;
-    margin: 40px auto;
-    padding: 0 40px;
-    flex: 1;
-  }
-
-  .back-link {
-    color: #8b7355;
-    text-decoration: underline;
-    font-size: 18px;
-    margin-bottom: 30px;
-    display: inline-block;
-    cursor: pointer;
-  }
-
-  .page-title {
-    text-align: center;
-    font-size: 48px;
-    color: #6b5d4f;
-    margin-bottom: 50px;
-    font-weight: normal;
-  }
-
-  /* Table */
-  .order-table {
-    width: 100%;
-    border-collapse: collapse;
-    
-  }
-
-  .order-table thead {
-    background-color: #f5f1e8;
-  }
-
-  .order-table th {
-    padding: 20px;
-    text-align: left;
-    font-size: 18px;
-    color: #6b5d4f;
-    font-weight: 600;
-    border-bottom: 2px solid #d4c5a9;
-  }
-
-  .order-table td {
-    padding: 20px;
-    font-size: 16px;
-    color: #5a5a5a;
-    border-bottom: 1px solid #e8e8e8;
-  }
-
-  .order-table tbody tr:hover {
-    background-color: #fafaf8;
-  }
-
-  .status-pending {
-    color: #f0ad4e;
-    font-weight: 500;
-  }
-
-  .status-paid {
-    color: #5cb85c;
-    font-weight: 500;
-  }
-
-  .status-cancelled {
-    color: #d9534f;
-    font-weight: 500;
-  }
-
-  .loading, .error, .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    font-size: 18px;
-    color: #8b7355;
-  }
+    body {
+      font-family: 'Libre Baskerville', 'Noto Sans Thai', serif;
+      width: 100%;
+      background-color: #f5f1e8;
+      color: #5a5a5a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
 
-  /* COMPACT FOOTER */
+    /* Main Content */
+    .container {
+      width: 1350px;
+      margin: 40px auto;
+      padding: 0 40px;
+      flex: 1;
+    }
+
+    .back-link {
+      color: #8b7355;
+      text-decoration: underline;
+      font-size: 18px;
+      margin-bottom: 30px;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 48px;
+      color: #6b5d4f;
+      margin-bottom: 50px;
+      font-weight: normal;
+    }
+
+    /* Table */
+    .order-table {
+      width: 100%;
+      border-collapse: collapse;
+
+    }
+
+    .order-table thead {
+      background-color: #f5f1e8;
+    }
+
+    .order-table th {
+      padding: 20px;
+      text-align: left;
+      font-size: 18px;
+      color: #6b5d4f;
+      font-weight: 600;
+      border-bottom: 2px solid #d4c5a9;
+    }
+
+    .order-table td {
+      padding: 20px;
+      font-size: 16px;
+      color: #5a5a5a;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    .order-table tbody tr:hover {
+      background-color: #fafaf8;
+    }
+
+    .status-pending {
+      color: #f0ad4e;
+      font-weight: 500;
+    }
+
+    .status-paid {
+      color: #5cb85c;
+      font-weight: 500;
+    }
+
+    .status-cancelled {
+      color: #d9534f;
+      font-weight: 500;
+    }
+
+    .loading,
+    .error,
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      font-size: 18px;
+      color: #8b7355;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
       .footer {
-          background: linear-gradient(135deg, #d4c5a9 0%, #c9b9a0 100%);
-          color: #5a5a5a;
-          padding: 30px 40px 20px;
-          margin-top: auto;
-      }
-
-      .footer-container {
-          max-width: 1440px;
-          margin: 0 auto;
-      }
-
-      /* Quote - Smaller */
-      .footer-quote {
-          text-align: center;
-          margin-bottom: 25px;
+        padding: 20px 20px 15px;
       }
 
       .footer-quote blockquote {
-          font-size: 16px;
-          font-style: italic;
-          color: #6b5d4f;
-          line-height: 1.5;
-          max-width: 600px;
-          margin: 0 auto;
-          font-weight: 300;
+        font-size: 14px;
       }
 
-      /* Compact Main Content */
       .footer-main {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 30px;
-          margin-bottom: 25px;
-          font-size: 14px;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        font-size: 13px;
       }
 
-      .footer-section h3 {
-          font-size: 16px;
-          color: #6b5d4f;
-          margin-bottom: 10px;
-          font-weight: 600;
-      }
-
-      .footer-section ul {
-          list-style: none;
-      }
-
-      .footer-section li {
-          margin-bottom: 6px;
-          font-size: 14px;
-          color: #5a5a5a;
-          line-height: 1.4;
-      }
-
-      .footer-section a {
-          color: #5a5a5a;
-          text-decoration: none;
-          transition: color 0.3s;
-      }
-
-      .footer-section a:hover {
-          color: #6b5d4f;
-      }
-
-      .footer-section p {
-          margin-bottom: 5px;
-          font-size: 14px;
-          color: #5a5a5a;
-          line-height: 1.5;
-      }
-
-      /* Bottom - Very Compact */
       .footer-bottom {
-          border-top: 1px solid #a89578;
-          padding-top: 15px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 15px;
+        flex-direction: column;
+        text-align: center;
       }
-
-      .footer-left {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-      }
-
-      .footer-logo {
-          width: 30px;
-          height: 30px;
-          opacity: 0.7;
-      }
-
-      .footer-copyright {
-          font-size: 14px;
-          color: #6b5d4f;
-      }
-
-      .social-icons {
-          display: flex;
-          gap: 15px;
-      }
-
-      .social-icon {
-          width: 24px;
-          height: 24px;
-          cursor: pointer;
-          transition: transform 0.3s, opacity 0.3s;
-          opacity: 0.7;
-      }
-
-      .social-icon:hover {
-          transform: translateY(-2px);
-          opacity: 1;
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-          .footer {
-              padding: 20px 20px 15px;
-          }
-          .footer-quote blockquote {
-              font-size: 14px;
-          }
-          .footer-main {
-              grid-template-columns: 1fr;
-              gap: 20px;
-              font-size: 13px;
-          }
-          .footer-bottom {
-              flex-direction: column;
-              text-align: center;
-          }
-      }
+    }
 </style>
 </head>
 <body>
@@ -424,8 +313,8 @@ async function loadOrders() {
   const contentDiv = document.getElementById('orderContent');
 
   try {
-    const userId = getUserId();
-    if (!userId) return; // ถ้าไม่มี user ให้เด้งไป login แล้วหยุด
+    // const userId = getUserId();
+    // if (!userId) return; // ถ้าไม่มี user ให้เด้งไป login แล้วหยุด
 
     const response = await fetch(`${API_BASE_URL}/orders/${userId}`);
 
