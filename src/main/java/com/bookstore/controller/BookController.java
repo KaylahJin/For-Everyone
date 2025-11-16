@@ -40,7 +40,8 @@ public class BookController {
     // add (JSON only, no image) - fallback path from admin.html
     @PostMapping
     public ResponseEntity<Book> addBook(@RequestBody Book book) {
-        if (book.getStock() < 0) book.setStock(0);
+        if (book.getStock() < 0)
+            book.setStock(0);
         return ResponseEntity.ok(bookRepository.save(book));
     }
 
@@ -54,13 +55,12 @@ public class BookController {
             @RequestParam String category,
             @RequestParam(required = false) String description,
             @RequestParam Integer stock,
-            @RequestParam(required = false) MultipartFile cover
-    ) {
+            @RequestParam(required = false) MultipartFile cover) {
         try {
             String coverUrl = null;
             if (cover != null && !cover.isEmpty()) {
-                String fileName = storage.saveFile(cover);  // your FileStorageService
-                coverUrl = "/uploads/" + fileName;          // <- public URL
+                String fileName = storage.saveFile(cover); // your FileStorageService
+                coverUrl = "/uploads/" + fileName; // <- public URL
             }
 
             Book b = new Book();
@@ -82,9 +82,9 @@ public class BookController {
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id) {
         return bookRepository.findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
-}
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     // update stock (used by +/- buttons)
     @PutMapping("/{id}/stock")
@@ -101,14 +101,40 @@ public class BookController {
     // delete
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable Long id) {
-        if (!bookRepository.existsById(id)) return ResponseEntity.notFound().build();
+        if (!bookRepository.existsById(id))
+            return ResponseEntity.notFound().build();
         bookRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
-    // categories (for datalist)
+    // ✅ Search books by title
+
+    // ✅ Unified Search: keyword + category
+    @GetMapping("/search")
+    public List<Book> searchBooks(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String category) {
+        if ((keyword == null || keyword.isBlank()) && (category == null || category.isBlank())) {
+            return bookRepository.findAll(); // no filters
+        }
+        if (keyword != null && !keyword.isBlank() && category != null && !category.isBlank()) {
+            return bookRepository.findByTitleContainingIgnoreCaseAndCategoryContainingIgnoreCase(keyword, category);
+        }
+        if (keyword != null && !keyword.isBlank()) {
+            return bookRepository.findByTitleContainingIgnoreCase(keyword);
+        }
+        return bookRepository.findByCategoryContainingIgnoreCase(category);
+    }
+
+    @GetMapping("/search/category")
+    public List<Book> searchByCategory(@RequestParam String category) {
+        return bookRepository.findByCategoryContainingIgnoreCase(category);
+    }
+
+    // ✅ Get all distinct categories
+    // ✅ Get all distinct categories directly from DB
     @GetMapping("/categories")
-    public List<String> categories() {
+    public List<String> getCategories() {
         return bookRepository.findDistinctCategories();
     }
 }
