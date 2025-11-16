@@ -225,15 +225,12 @@ async function loadOrderDetails() {
             
             html += `
                     <div class="info-row">
-                        <span class="info-label">Bank:</span>
                         <span class="info-value">${getBankDisplayName(bankName)}</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">Account:</span>
                         <span class="info-value">${accountNum}</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">Account Name:</span>
                         <span class="info-value">ร้านบุ๊คสโตร์</span>
                     </div>
                     <div class="info-row" style="margin-top: 20px;">
