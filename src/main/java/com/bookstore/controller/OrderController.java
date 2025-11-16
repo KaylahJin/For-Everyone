@@ -6,22 +6,27 @@ import com.bookstore.repo.ShippingAddressRepository;
 import com.bookstore.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.bookstore.dto.AdminOrderSummaryResponse;
+import com.bookstore.model.User;
+import com.bookstore.repo.UserRepository;
 
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
 
     private final ShippingAddressRepository shippingAddressRepository;
     private final OrderService orderService;
+    private final UserRepository userRepository;
 
     public OrderController(ShippingAddressRepository shippingAddressRepository,
-                           OrderService orderService) {
+                           OrderService orderService,
+                           UserRepository userRepository) {
         this.shippingAddressRepository = shippingAddressRepository;
         this.orderService = orderService;
+        this.userRepository = userRepository;
     }
 
     // ✅ Checkout: create order from cart
@@ -58,32 +63,35 @@ public class OrderController {
                 .map(OrderResponse::from)
                 .toList();
     }
-
-    // ✅ Admin: get ALL orders
-        // ✅ Admin: get ALL orders
-        @GetMapping("/all")
-        public List<OrderResponse> getAllOrders() {
-            return orderService.getAllOrders()
-                    .stream()
-                    .map(OrderResponse::from)
-                    .toList();
-        }
-
-        // ✅ Admin: update order status (PENDING_PAYMENT → COMPLETE / CANCELLED)
-    @PutMapping("/{orderId}/status")
-    public ResponseEntity<OrderResponse> updateStatus(
+    
+    // ✅ Admin: ดึงลิสต์ order ทั้งหมดสำหรับหน้า Checking Order & Slip
+    @GetMapping("/admin/list")
+    public List<AdminOrderSummaryResponse> getAdminOrderList() {
+        return orderService.getAllOrders().stream()
+                .map(order -> {
+                    User user = userRepository.findById(order.getUserId()).orElse(null);
+                    return AdminOrderSummaryResponse.from(order, user);
+                })
+                .toList();
+    }
+    
+    // ✅ Admin: อัปเดตสถานะ order
+    // body ตัวอย่าง: { "status": "PAID" } หรือ { "status": "CANCELLED" }
+    @PostMapping("/{orderId}/status")
+    public ResponseEntity<?> updateStatus(
             @PathVariable Long orderId,
-            @RequestBody Map<String, String> body) {
+            @RequestParam String status) {
 
-        String status = body.get("status");  // "COMPLETE" หรือ "CANCELLED"
-        Order updated = orderService.updateOrderStatus(orderId, status);
-        return ResponseEntity.ok(OrderResponse.from(updated));
+        Order order = orderService.getOrder(orderId);
+        order.setStatus(status);
+        orderService.updateOrder(order);
+
+        return ResponseEntity.ok().build();
     }
 
-    // ✅  Get single order by orderId (ใช้ใน admin-checkout.html)
     @GetMapping("/order/{orderId}")
-    public OrderResponse getOrderById(@PathVariable Long orderId) {
-        Order order = orderService.getOrderById(orderId);
-        return OrderResponse.from(order);
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long orderId) {
+        Order order = orderService.getOrder(orderId);
+        return ResponseEntity.ok(OrderResponse.from(order));
     }
 }

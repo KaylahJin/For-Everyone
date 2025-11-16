@@ -31,8 +31,7 @@
         /* Main */
         .main-content {
             flex: 1;
-            margin-left: 260px;
-            padding: 30px 40px;
+            padding: 60px 90px;
         }
 
         .page-title {
@@ -165,7 +164,6 @@
 </head>
 
 <body>
-
     <div class="sidebar">
         <div class="profile">
             <img src="img/BlankPF.png" alt="Profile">
@@ -176,22 +174,15 @@
 
         <nav>
             <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="booklist.html" class="nav-link">Book List</a>
-                </li>
-                <li class="nav-item">
-                    <a href="addbook.html" class="nav-link">Add New Book</a>
-                </li>
-                <li class="nav-item">
-                    <a href="admin-order-list.html" class="nav-link active">Order List</a>
-                </li>
+                <li class="nav-item"><a href="booklist.html" class="nav-link">Book List</a></li>
+                <li class="nav-item"><a href="addbook.html" class="nav-link">Add New Book</a></li>
+                <li class="nav-item"><a href="admin-order-list.html" class="nav-link active">Order List</a></li>
             </ul>
         </nav>
 
         <button onclick="logout()">Logout</button>
     </div>
 
-    <!-- Content -->
     <main class="main-content">
         <h1 class="page-title">ตรวจสอบคำสั่งซื้อและใบเสร็จ</h1>
 
@@ -217,6 +208,7 @@
             </table>
         </div>
     </main>
+
     <script>
         const API_BASE = "http://localhost:8080/api";
         let allOrders = [];
@@ -224,7 +216,6 @@
 
         async function getUsername(userId) {
             if (usersCache[userId]) return usersCache[userId];
-
             try {
                 const res = await fetch(`${API_BASE}/users/${userId}`);
                 if (res.ok) {
@@ -245,23 +236,23 @@
         }
 
         function getStatusClass(status) {
-            if (status === 'COMPLETE') return 'status-complete';
+            if (status === 'PAID' || status === 'COMPLETE') return 'status-complete';
             if (status === 'CANCELLED') return 'status-cancelled';
             return 'status-pending';
         }
 
         function getStatusText(status) {
-            if (status === 'COMPLETE') return 'Complete';
+            if (status === 'PAID' || status === 'COMPLETE') return 'Complete';
             if (status === 'CANCELLED') return 'Cancelled';
             return 'Pending';
         }
 
         async function loadOrders() {
             const body = document.getElementById("ordersTableBody");
+            if (!body) return console.error('❌ tbody#ordersTableBody ไม่พบใน DOM');
 
             try {
-                // ✅ Use /all endpoint for admin to get ALL orders
-                const res = await fetch(`${API_BASE}/orders/all`);
+                const res = await fetch(`${API_BASE}/orders/admin/list`);
                 if (!res.ok) throw new Error("Fetch failed");
 
                 allOrders = await res.json();
@@ -273,52 +264,28 @@
 
                 const rows = await Promise.all(
                     allOrders.map(async o => {
-                        const username = await getUsername(o.userId);
-                        const first = o.items?.[0];
-                        const totalQty = o.items.reduce((s, i) => s + i.quantity, 0);
-
-                        // Disable approve/reject buttons if order is already complete or cancelled
-                        const isPending = o.status === 'PENDING_PAYMENT';
+                        const username = o.username || await getUsername(o.userId);
+                        const totalQty = o.amount || 0;
+                        const isPending = o.status !== 'PAID' && o.status !== 'CANCELLED';
                         const disabledAttr = isPending ? '' : 'disabled';
 
                         return `
-        <tr>
-          <td>${username}</td>
-          <td>${first ? first.title : "-"}</td>
-          <td>${formatTime(o.orderDate)}</td>
-          <td>${formatDate(o.orderDate)}</td>
-          <td>${totalQty}</td>
-          <td>฿${o.total.toFixed(0)}</td>
-          <td>
-            <span class="status-badge ${getStatusClass(o.status)}">
-              ${getStatusText(o.status)}
-            </span>
-          </td>
-          <td>
-            <div class="action-cell">
-              <button 
-                class="btn-approve" 
-                onclick="approveOrder(${o.id})"
-                ${disabledAttr}
-                title="Approve">
-                ✓
-              </button>
-              <button 
-                class="btn-reject" 
-                onclick="rejectOrder(${o.id})"
-                ${disabledAttr}
-                title="Cancel">
-                ✗
-              </button>
-              <a 
-                href="admin-checkout.html?orderId=${o.id}" 
-                class="btn-view"
-                title="View Details">
-                🔍 View
-              </a>
-            </div>
-          </td>
-        </tr>`;
+<tr>
+  <td>${username}</td>
+  <td>${o.book || "-"}</td>
+  <td>${o.time || "-"}</td>
+  <td>${o.date || "-"}</td>
+  <td>${totalQty}</td>
+  <td>฿${o.price?.toFixed(0) || 0}</td>
+  <td><span class="status-badge ${getStatusClass(o.status)}">${getStatusText(o.status)}</span></td>
+  <td>
+    <div class="action-cell">
+      <button class="btn-approve" onclick="approveOrder(${o.orderId})" ${disabledAttr} title="Approve">✓</button>
+      <button class="btn-reject" onclick="rejectOrder(${o.orderId})" ${disabledAttr} title="Cancel">✗</button>
+      <a href="admin-checkout.html?orderId=${o.orderId}" class="btn-view" title="View Details">🔍 View</a>
+    </div>
+  </td>
+</tr>`;
                     })
                 );
 
@@ -330,22 +297,13 @@
             }
         }
 
-        // Approve order (change status to COMPLETE)
         async function approveOrder(orderId) {
-            if (!confirm('ยืนยันการอนุมัติคำสั่งซื้อนี้?\nสถานะจะเปลี่ยนเป็น "Complete"')) {
-                return;
-            }
-
+            if (!confirm('ยืนยันการอนุมัติคำสั่งซื้อนี้?\nสถานะจะเปลี่ยนเป็น "PAID"')) return;
             try {
-                const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: 'COMPLETE' })
-                });
-
+                const res = await fetch(`${API_BASE}/orders/${orderId}/status?status=PAID`, { method: 'POST' });
                 if (res.ok) {
                     alert('✅ อนุมัติคำสั่งซื้อเรียบร้อยแล้ว');
-                    loadOrders(); // Reload table
+                    loadOrders();
                 } else {
                     const error = await res.text();
                     alert('❌ เกิดข้อผิดพลาด: ' + error);
@@ -356,22 +314,13 @@
             }
         }
 
-        // Reject order (change status to CANCELLED)
         async function rejectOrder(orderId) {
-            if (!confirm('ยืนยันการยกเลิกคำสั่งซื้อนี้?\nสถานะจะเปลี่ยนเป็น "Cancelled"')) {
-                return;
-            }
-
+            if (!confirm('ยืนยันการยกเลิกคำสั่งซื้อนี้?\nสถานะจะเปลี่ยนเป็น "CANCELLED"')) return;
             try {
-                const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: 'CANCELLED' })
-                });
-
+                const res = await fetch(`${API_BASE}/orders/${orderId}/status?status=CANCELLED`, { method: 'POST' });
                 if (res.ok) {
                     alert('✅ ยกเลิกคำสั่งซื้อเรียบร้อยแล้ว');
-                    loadOrders(); // Reload table
+                    loadOrders();
                 } else {
                     const error = await res.text();
                     alert('❌ เกิดข้อผิดพลาด: ' + error);
@@ -391,8 +340,6 @@
 
         document.addEventListener("DOMContentLoaded", loadOrders);
     </script>
-    <script src="logout.js"></script>
-
 </body>
 
 </html>
