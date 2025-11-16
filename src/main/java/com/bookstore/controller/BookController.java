@@ -2,12 +2,8 @@ package com.bookstore.controller;
 
 import com.bookstore.model.Book;
 import com.bookstore.repo.BookRepository;
-<<<<<<< HEAD
 import com.bookstore.storage.FileStorageService;
 import org.springframework.http.MediaType;
-=======
-
->>>>>>> 058ab9965e73e16c28876ec63277492eb72589d2
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -115,13 +111,4 @@ public class BookController {
     public List<String> categories() {
         return bookRepository.findDistinctCategories();
     }
-<<<<<<< HEAD
-=======
- @GetMapping("/{id}")
-    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
-        return bookRepository.findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
-}
->>>>>>> 058ab9965e73e16c28876ec63277492eb72589d2
 }
