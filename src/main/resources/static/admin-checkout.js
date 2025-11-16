@@ -1,6 +1,16 @@
 // ⚙️ Configuration
 const API_BASE_URL = 'http://localhost:8080/api';
 
+// ✅ LOGIN CHECK - Redirect if not admin
+function checkAdminAuth() {
+    const email = localStorage.getItem('email');
+    if (email?.toLowerCase() !== 'admin@admin.com') {
+        alert('Access denied');
+        window.location.href = 'index.html';
+        return;
+    }
+}
+
 // Get order ID from URL parameter (?orderId=1)
 const urlParams = new URLSearchParams(window.location.search);
 const ORDER_ID = urlParams.get('orderId');
@@ -77,7 +87,6 @@ async function getPaymentForOrder(orderId) {
         const response = await fetch(`${API_BASE_URL}/payments/order/${orderId}`);
         if (response.ok) {
             const payments = await response.json();
-            // Return first payment if array, or the payment itself
             return Array.isArray(payments) ? payments[0] : payments;
         }
     } catch (error) {
@@ -86,8 +95,24 @@ async function getPaymentForOrder(orderId) {
     return null;
 }
 
+// ✅ Format bank name for display
+function getBankDisplayName(bankCode) {
+    const banks = {
+        'kbank': 'ธนาคารกสิกรไทย (KBANK)',
+        'scb': 'ธนาคารไทยพาณิชย์ (SCB)',
+        'KBANK': 'ธนาคารกสิกรไทย (KBANK)',
+        'SCB': 'ธนาคารไทยพาณิชย์ (SCB)'
+    };
+    return banks[bankCode] || bankCode;
+}
+
 // 📦 Load order details
 async function loadOrderDetails() {
+    // ✅ Check auth first
+    if (!checkAdminAuth()) {
+        return;
+    }
+
     if (!ORDER_ID) {
         document.getElementById('checkoutContent').innerHTML = `
             <div class="error">❌ No order ID provided</div>
@@ -99,7 +124,7 @@ async function loadOrderDetails() {
     const usernameDiv = document.getElementById('username');
     
     try {
-        // ✅ Fetch order by ID using the correct endpoint
+        // ✅ Fetch order by ID
         const response = await fetch(`${API_BASE_URL}/orders/order/${ORDER_ID}`);
         
         if (!response.ok) {
@@ -141,7 +166,7 @@ async function loadOrderDetails() {
                 </div>
                 <div class="summary-row">
                     <span class="label">Discount</span>
-                    <span class="value">฿${currentOrder.discount ? '-' + currentOrder.discount.toFixed(0) : '-40'}</span>
+                    <span class="value">-฿${currentOrder.discount ? currentOrder.discount.toFixed(0) : '40'}</span>
                 </div>
                 <div class="summary-row total">
                     <span class="label">Total</span>
@@ -154,21 +179,21 @@ async function loadOrderDetails() {
                 <div class="payment-info">
         `;
 
-        // Payment info
+        // ✅ Payment info - Show actual bank selected by user
         if (currentPayment) {
             html += `
                     <div class="info-row">
-                        <span class="info-value">${currentPayment.bankName || 'ธนาคารกสิกรไทย'}</span>
+                        <span class="info-value">${getBankDisplayName(currentPayment.bankName)}</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-value">${currentPayment.accountNumber || 'xxx-x-x9999-x'}</span>
+                        <span class="info-value">${currentPayment.accountNumber || '123-4-56789-0'}</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-value">นาง สาว เธอ กลอง เฮ้อคิส</span>
+                        <span class="info-value">ร้านบุ๊คสโตร์</span>
                     </div>
                     <div class="info-row" style="margin-top: 20px;">
                         <span class="info-label">Amount:</span>
-                        <span class="info-value">${currentPayment.amount.toFixed(2)}</span>
+                        <span class="info-value">฿${currentPayment.amount.toFixed(2)}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Date:</span>
@@ -180,6 +205,7 @@ async function loadOrderDetails() {
                     </div>
             `;
 
+            // ✅ Show slip if available, or show "no slip" message
             if (currentPayment.slipFileName) {
                 const slipUrl = `http://localhost:8080/uploads/${currentPayment.slipFileName}`;
                 html += `
@@ -196,37 +222,31 @@ async function loadOrderDetails() {
                         </div>
                     </div>
                 `;
-            }
-        } else {
-            // No payment uploaded yet
-            html += `
-                    <div class="info-row">
-                        <span class="info-value">ธนาคารกสิกรไทย</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-value">xxx-x-x9999-x</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-value">นาง สาว เธอ กลอง เฮ้อคิส</span>
-                    </div>
-                    <div class="info-row" style="margin-top: 20px;">
-                        <span class="info-label">Amount:</span>
-                        <span class="info-value">${currentOrder.total.toFixed(2)}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Date:</span>
-                        <span class="info-value">${formatDate(currentOrder.orderDate)}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Time:</span>
-                        <span class="info-value">${formatTime(currentOrder.orderDate)}</span>
-                    </div>
+            } else {
+                // ✅ No validation error - just show informational message
+                html += `
                     <div class="info-row" style="margin-top: 10px;">
                         <span class="info-label">E-slip:</span>
-                        <span class="info-value" style="color: #d9534f;">No payment slip uploaded yet</span>
+                        <span class="info-value" style="color: #999;">No slip file uploaded</span>
+                    </div>
+                `;
+            }
+        } else {
+            // ✅ No payment record yet - show order info
+            html += `
+                    <div class="info-row">
+                        <span class="info-value" style="color: #999;">Payment information not submitted yet</span>
+                    </div>
+                    <div class="info-row" style="margin-top: 20px;">
+                        <span class="info-label">Expected Amount:</span>
+                        <span class="info-value">฿${currentOrder.total.toFixed(2)}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Order Date:</span>
+                        <span class="info-value">${formatDate(currentOrder.orderDate)}</span>
                     </div>
                     <div class="no-slip-warning">
-                        ⚠️ Customer hasn't uploaded payment slip yet.
+                        ℹ️ Customer hasn't submitted payment information yet.
                     </div>
             `;
         }

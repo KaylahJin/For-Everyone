@@ -8,6 +8,7 @@ public class CartItemResponse {
     private String title;
     private String author;
     private String category;  // ✅ เพิ่ม field นี้
+    private String coverUrl;
     private double price;
     private int quantity;
 
@@ -19,6 +20,7 @@ public class CartItemResponse {
         response.title = item.getBook().getTitle();
         response.author = item.getBook().getAuthor();
         response.category = item.getBook().getCategory(); // ✅ ดึง category จาก book
+        response.coverUrl = item.getBook().getCoverUrl();
         response.price = item.getBook().getPrice();
         response.quantity = item.getQuantity();
         return response;
@@ -30,6 +32,7 @@ public class CartItemResponse {
     public String getTitle() { return title; }
     public String getAuthor() { return author; }
     public String getCategory() { return category; }  // ✅ getter ใหม่
+    public String getCoverUrl() { return coverUrl; }
     public double getPrice() { return price; }
     public int getQuantity() { return quantity; }
 }

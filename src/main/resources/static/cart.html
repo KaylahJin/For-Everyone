@@ -248,7 +248,7 @@
       items.forEach(it => {
         subtotal += it.price * it.quantity;
         const $ = tpl.content.cloneNode(true);
-        $.querySelector(".thumb").src = "img/book-placeholder.png";
+        $.querySelector(".thumb").src = it.coverUrl || "img/placeholder.png"; // fallback ถ้าไม่มี cover
         $.querySelector(".title").textContent = it.title;
         $.querySelector(".author").textContent = it.author || "";
         $.querySelector(".price").textContent = THB(it.price);
