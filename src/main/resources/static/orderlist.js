@@ -2,6 +2,17 @@ const API_BASE = "http://localhost:8080/api";
 let allOrders = [];
 let usersCache = {};
 
+function checkAdminAuth() {
+    const email = localStorage.getItem('email');
+    
+    if (email?.toLowerCase() !== 'admin@admin.com') {
+        alert('Access denied');
+        window.location.href = 'login.html'; 
+        return false;
+    }
+    return true;
+}
+
 async function getUsername(userId) {
     if (usersCache[userId]) return usersCache[userId];
     try {
@@ -138,4 +149,8 @@ async function rejectOrder(orderId) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", loadOrders);
+document.addEventListener("DOMContentLoaded", () => {
+    if (checkAdminAuth()) {
+        loadOrders();
+    }
+});
