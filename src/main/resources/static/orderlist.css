@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Libre Baskerville", "Noto Sans Thai", serif;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f1e8;
+    color: #403a2a;
+    min-height: 100vh;
+}
+
+/* Main */
+.main-content {
+    flex: 1;
+    padding: 60px 90px;
+}
+
+.page-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+/* Table */
+.orders-table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th {
+    background: #f5eebf;
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.orders-table td {
+    padding: 16px;
+    border-bottom: 1px solid #e6e0cf;
+}
+
+.orders-table tr:hover {
+    background: #fafaf8;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #7a7461;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-complete {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Action buttons */
+.action-cell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-view {
+    padding: 8px 16px;
+    background: #B6A88A;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+
+.btn-view:hover {
+    background: #a39578;
+}
+
+.btn-approve {
+    padding: 6px 10px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    transition: background 0.2s;
+}
+
+.btn-approve:hover {
+    background: #218838;
+}
+
+.btn-reject {
+    padding: 6px 10px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    transition: background 0.2s;
+}
+
+.btn-reject:hover {
+    background: #c82333;
+}
+
+/* Disable buttons for completed/cancelled orders */
+.btn-approve:disabled,
+.btn-reject:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}

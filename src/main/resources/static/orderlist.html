@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Book Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="stylesheet.css" />
+    <link rel="stylesheet" href="orderlist.css" />
+
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <img src="img/BlankPF.png" alt="Profile">
+            <p>admin</p>
+        </div>
+
+        <hr>
+
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="booklist.html" class="nav-link">Book List</a></li>
+                <li class="nav-item"><a href="addbook.html" class="nav-link">Add New Book</a></li>
+                <li class="nav-item"><a href="#" class="nav-link active">Order List</a></li>
+            </ul>
+        </nav>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <main class="main-content">
+        <h1 class="page-title">ตรวจสอบคำสั่งซื้อและใบเสร็จ</h1>
+
+        <div class="orders-table-container">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Book</th>
+                        <th>Time</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <tr>
+                        <td colspan="8" class="empty-state">กำลังโหลดข้อมูล...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="orderlist.js"></script>
+    <script src="logout.js"></script>
+    </body>
+
+</html>
